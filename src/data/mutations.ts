@@ -1,7 +1,7 @@
 import { db, LoggedWorkout, LoggedSet, cryptoRandomId } from "./db"
 import { getActiveMesocycle, getPlannedExercisesForDay, getSettings, getInProgressWorkout } from "./queries"
 import { WORKOUT_ROTATION } from "../domain/plan"
-import { currentWeek, isDeloadWeek } from "../domain/mesocycle"
+import { Mesocycle, currentWeek, isDeloadWeek, deloadStartedAt } from "../domain/mesocycle"
 
 export async function startWorkout(): Promise<LoggedWorkout> {
   const existing = await getInProgressWorkout()
@@ -69,4 +69,45 @@ function toDateString(d: Date): string {
   const m = String(d.getMonth() + 1).padStart(2, "0")
   const day = String(d.getDate()).padStart(2, "0")
   return `${y}-${m}-${day}`
+}
+
+export async function swapExercise(
+  workoutId: string,
+  currentPlannedExerciseId: string,
+  swap: { newPlannedExerciseId: string; newName: string },
+): Promise<void> {
+  const workout = await db.loggedWorkouts.get(workoutId)
+  if (!workout) throw new Error(`Workout ${workoutId} not found`)
+  const ex = workout.exercises.find(e => e.plannedExerciseId === currentPlannedExerciseId)
+  if (!ex) throw new Error(`Exercise ${currentPlannedExerciseId} not in workout`)
+  ex.swappedFromId = ex.plannedExerciseId
+  ex.plannedExerciseId = swap.newPlannedExerciseId
+  ex.nameAtTime = swap.newName
+  ex.sets = [] // fresh slate for the swapped-in exercise
+  await db.loggedWorkouts.put(workout)
+}
+
+export async function startDeloadNow(): Promise<void> {
+  const m = await getActiveMesocycle()
+  if (!m) throw new Error("No active mesocycle")
+  const newStart = deloadStartedAt(new Date(), m.weekLength)
+  await db.mesocycles.update(m.id, { startedAt: newStart.toISOString() })
+}
+
+export async function resetMesocycle(): Promise<void> {
+  await db.transaction("rw", db.mesocycles, async () => {
+    const m = await getActiveMesocycle()
+    if (m) await db.mesocycles.update(m.id, { status: "completed" })
+    const fresh: Mesocycle = {
+      id: cryptoRandomId(),
+      startedAt: new Date().toISOString(),
+      weekLength: m?.weekLength ?? 5,
+      status: "active",
+    }
+    await db.mesocycles.add(fresh)
+  })
+}
+
+export async function completeMesocycleAndStartNew(): Promise<void> {
+  await resetMesocycle()
 }
