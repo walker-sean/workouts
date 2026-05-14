@@ -29,20 +29,22 @@ export default function WarmupCard({ workout, onDone }: { workout: LoggedWorkout
       const working = meso && isDeloadWeek(meso, today) ? deloadWeight(base.weight) : base.weight
       return {
         working,
-        ramps: rampUpSets(working),
         mobility: settings?.warmupMobilityItems ?? [],
         exerciseName: opening.ex.nameAtTime,
       }
     },
   })
 
+  const [workingOverride, setWorkingOverride] = useState<number | null>(null)
   const [checked, setChecked] = useState<Set<string>>(new Set())
   if (!ctx.data) return <div>Loading warmup…</div>
-  const { working, ramps, mobility, exerciseName } = ctx.data
+  const { working: suggested, mobility, exerciseName } = ctx.data
+  const working = workingOverride ?? suggested
+  const ramps = rampUpSets(working)
+
   const toggle = (key: string) => {
     const next = new Set(checked)
-    if (next.has(key)) next.delete(key)
-    else next.add(key)
+    next.has(key) ? next.delete(key) : next.add(key)
     setChecked(next)
   }
 
@@ -66,7 +68,17 @@ export default function WarmupCard({ workout, onDone }: { workout: LoggedWorkout
         ))}
       </ul>
 
-      <h3 className="warmup-section">Ramp-up — {exerciseName} (working: {working} lb)</h3>
+      <h3 className="warmup-section">Ramp-up — {exerciseName}</h3>
+      <label className="working-weight">
+        Working weight (lb):
+        <input
+          type="number"
+          inputMode="decimal"
+          step={2.5}
+          value={working}
+          onChange={e => setWorkingOverride(parseFloat(e.target.value) || 0)}
+        />
+      </label>
       <ul className="ramp-list">
         {ramps.map((r, i) => (
           <li key={i} className="ramp-row">

@@ -1,11 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { LoggedExercise } from "../../../data/db"
 import { logSet } from "../../../data/mutations"
-import { lastSessionForExercise } from "../../../data/queries"
-import { suggestNext } from "../../../domain/progression"
+import { lastSessionForExercise, getActiveMesocycle, historyForExercise } from "../../../data/queries"
+import { suggestNext, countStall } from "../../../domain/progression"
 import { SEEDED_PLAN } from "../../../domain/plan"
 import { prescribedSetCount, isDeloadWeek, deloadWeight, deloadRir } from "../../../domain/mesocycle"
-import { getActiveMesocycle } from "../../../data/queries"
 import SetRow, { SetDraft } from "./SetRow"
 import { restTimer } from "./restTimerStore"
 
@@ -23,9 +22,10 @@ export default function ExerciseCard({ workoutId, plannedExerciseId, exercise }:
     enabled: !!plan,
     queryFn: async () => {
       const p = plan!
-      const [last, meso] = await Promise.all([
+      const [last, meso, history] = await Promise.all([
         lastSessionForExercise(plannedExerciseId),
         getActiveMesocycle(),
+        historyForExercise(plannedExerciseId),
       ])
       const today = new Date()
       const deload = meso ? isDeloadWeek(meso, today) : false
@@ -37,7 +37,8 @@ export default function ExerciseCard({ workoutId, plannedExerciseId, exercise }:
       const suggestion: SetDraft = deload
         ? { weight: deloadWeight(baseSuggestion.weight), reps: baseSuggestion.reps, rir: deloadRir(baseSuggestion.rir) }
         : baseSuggestion
-      return { last, suggestion, targetSetCount, deload }
+      const stallCount = countStall(history)
+      return { last, suggestion, targetSetCount, deload, stallCount }
     },
   })
 
@@ -52,7 +53,7 @@ export default function ExerciseCard({ workoutId, plannedExerciseId, exercise }:
   if (!plan) return <div>Unknown exercise</div>
   if (ctx.isLoading || !ctx.data) return <div>Loading exercise…</div>
 
-  const { suggestion, targetSetCount, last, deload } = ctx.data
+  const { suggestion, targetSetCount, last, deload, stallCount } = ctx.data
   const totalRows = Math.max(targetSetCount, exercise.sets.length)
   const lastSummary = last
     ? last.sets.map(s => `${s.weight}×${s.reps}`).join(", ")
@@ -60,6 +61,11 @@ export default function ExerciseCard({ workoutId, plannedExerciseId, exercise }:
 
   return (
     <div className="exercise-body">
+      {stallCount >= 3 && (
+        <div className="banner banner-warn">
+          Stalled {stallCount} sessions — consider a swap or extra set.
+        </div>
+      )}
       <div className="target-line">
         <strong>{plan.repRange[0]}–{plan.repRange[1]} reps @ {plan.rir} RIR{deload ? " · DELOAD" : ""}</strong>
         <span className="target-history">last: {lastSummary}</span>

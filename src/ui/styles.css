@@ -144,3 +144,8 @@ input { font: inherit; }
 .settings-body { display: flex; flex-direction: column; gap: 12px; }
 .settings-row { display: flex; justify-content: space-between; align-items: center; min-height: var(--tap); }
 .settings-row select { background: var(--surface); color: var(--text); border: 1px solid var(--surface-2); border-radius: 8px; padding: 8px 12px; font-size: 16px; }
+
+.banner { padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; font-size: 14px; }
+.banner-warn { background: rgba(217, 102, 102, 0.15); color: var(--danger); }
+.working-weight { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-dim); }
+.working-weight input { width: 80px; background: var(--surface); border: 1px solid var(--surface-2); border-radius: 8px; color: var(--text); padding: 8px; font-size: 16px; text-align: center; }
