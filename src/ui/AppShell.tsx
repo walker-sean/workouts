@@ -3,12 +3,14 @@ import { TabKey, TABS } from "./tabs"
 import TodayTab from "./tabs/Today"
 import HistoryTab from "./tabs/History"
 import PlanTab from "./tabs/Plan"
+import UpdateBanner from "./UpdateBanner"
 
 export default function AppShell() {
   const [tab, setTab] = useState<TabKey>("today")
   return (
     <div className="app-shell">
       <main className="tab-content">
+        <UpdateBanner />
         {tab === "today" && <TodayTab />}
         {tab === "history" && <HistoryTab />}
         {tab === "plan" && <PlanTab />}
