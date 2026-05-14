@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { suggestNext, ExerciseConfig, LastSession } from "./progression"
+import { suggestNext, ExerciseConfig, LastSession, countStall } from "./progression"
 
 const config: ExerciseConfig = {
   repRange: [8, 10],
@@ -63,5 +63,37 @@ describe("suggestNext", () => {
     // top set wasn't ALL at 100 reaching 10 — actually yes, the 100 sets hit 10, but
     // the back-off set is at 95. The function judges by sets at the modal weight.
     expect(suggestNext(config, last)).toEqual({ weight: 105, reps: 8, rir: 2 })
+  })
+})
+
+describe("countStall", () => {
+  it("returns 0 with no history", () => {
+    expect(countStall([])).toBe(0)
+  })
+
+  it("returns 0 if last session improved", () => {
+    const sessions = [
+      { sets: [{ weight: 100, reps: 9, rir: 2 }] },
+      { sets: [{ weight: 100, reps: 10, rir: 2 }] }, // improved reps
+    ]
+    expect(countStall(sessions)).toBe(0)
+  })
+
+  it("counts consecutive sessions with no improvement", () => {
+    const sessions = [
+      { sets: [{ weight: 100, reps: 8, rir: 2 }] },
+      { sets: [{ weight: 100, reps: 8, rir: 2 }] }, // no change
+      { sets: [{ weight: 100, reps: 8, rir: 2 }] }, // no change
+    ]
+    expect(countStall(sessions)).toBe(2)
+  })
+
+  it("resets when weight goes up", () => {
+    const sessions = [
+      { sets: [{ weight: 100, reps: 8, rir: 2 }] },
+      { sets: [{ weight: 100, reps: 8, rir: 2 }] },
+      { sets: [{ weight: 105, reps: 8, rir: 2 }] }, // bumped
+    ]
+    expect(countStall(sessions)).toBe(0)
   })
 })

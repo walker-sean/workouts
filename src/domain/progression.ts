@@ -34,6 +34,29 @@ export function suggestNext(config: ExerciseConfig, last: LastSession | null): S
   return { weight: workingWeight, reps: Math.min(worstReps + 1, high), rir: config.rir }
 }
 
+// Sessions array is oldest -> newest. Returns the number of consecutive sessions
+// at the tail with NO improvement (neither weight nor reps went up vs the prior session).
+export function countStall(sessions: LastSession[]): number {
+  let stalls = 0
+  for (let i = sessions.length - 1; i > 0; i--) {
+    const cur = aggregate(sessions[i])
+    const prev = aggregate(sessions[i - 1])
+    if (cur.weight > prev.weight) break
+    if (cur.weight === prev.weight && cur.totalReps > prev.totalReps) break
+    stalls++
+  }
+  return stalls
+}
+
+function aggregate(session: LastSession) {
+  const weights = session.sets.map(s => s.weight)
+  const weight = Math.max(...weights)
+  const totalReps = session.sets
+    .filter(s => s.weight === weight)
+    .reduce((sum, s) => sum + s.reps, 0)
+  return { weight, totalReps }
+}
+
 function modalWeight(sets: LoggedSetData[]): number {
   const counts = new Map<number, number>()
   for (const s of sets) counts.set(s.weight, (counts.get(s.weight) ?? 0) + 1)
