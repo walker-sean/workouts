@@ -1,3 +1,5 @@
+import { roundToIncrement } from "./units"
+
 export type Mesocycle = {
   id: string
   startedAt: string         // ISO date
@@ -39,4 +41,12 @@ export function prescribedSetCount(
 // Returns the startedAt date that would make `today` fall in the deload week.
 export function deloadStartedAt(today: Date, weekLength: number): Date {
   return new Date(today.getTime() - weekLength * ONE_WEEK_MS)
+}
+
+export function deloadWeight(workingWeight: number): number {
+  return roundToIncrement(workingWeight * 0.6, 2.5)
+}
+
+export function deloadRir(baseRir: number): number {
+  return baseRir + 1
 }

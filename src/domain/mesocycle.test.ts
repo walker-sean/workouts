@@ -84,3 +84,24 @@ describe("deloadStartedAt", () => {
     expect(currentWeek(m, today)).toBe(6)
   })
 })
+
+import { deloadWeight, deloadRir } from "./mesocycle"
+
+describe("deloadWeight", () => {
+  it("returns 60% of working weight, rounded to 2.5", () => {
+    expect(deloadWeight(150)).toBe(90)
+  })
+  it("rounds: 60% of 137.5 = 82.5", () => {
+    expect(deloadWeight(137.5)).toBe(82.5)
+  })
+  it("60% of 100 = 60", () => {
+    expect(deloadWeight(100)).toBe(60)
+  })
+})
+
+describe("deloadRir", () => {
+  it("adds 1 to base RIR", () => {
+    expect(deloadRir(2)).toBe(3)
+    expect(deloadRir(0)).toBe(1)
+  })
+})
