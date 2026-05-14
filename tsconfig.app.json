@@ -19,7 +19,10 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true
+    "erasableSyntaxOnly": true,
+
+    /* Vitest */
+    "types": ["vitest/globals", "vite/client"]
   },
   "include": ["src"]
 }
