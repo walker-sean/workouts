@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { db, LoggedWorkout } from "../../../data/db"
 import { finishWorkout, discardWorkout } from "../../../data/mutations"
 import ExerciseCard from "./ExerciseCard"
+import WarmupCard from "./WarmupCard"
 
 const DAY_LABEL: Record<string, string> = {
   UpperA: "Upper A", LowerA: "Lower A", UpperB: "Upper B", LowerB: "Lower B",
@@ -44,7 +45,17 @@ export default function ActiveWorkout({ workout }: { workout: LoggedWorkout }) {
         <button className="card-header" onClick={() => setExpanded(expanded === "warmup" ? "" : "warmup")}>
           Warmup
         </button>
-        {expanded === "warmup" && <div className="card-body">Warmup card content (next task)</div>}
+        {expanded === "warmup" && (
+          <div className="card-body">
+            <WarmupCard
+              workout={w}
+              onDone={() => {
+                const first = w.exercises[0]
+                setExpanded(first ? first.plannedExerciseId : "")
+              }}
+            />
+          </div>
+        )}
       </section>
 
       {w.exercises.map(ex => (
