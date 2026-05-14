@@ -113,3 +113,14 @@ input { font: inherit; }
 .summary-meta { color: var(--text-dim); margin: 0; }
 .summary-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
 .summary-list li { background: var(--surface); padding: 12px; border-radius: 10px; }
+
+.history { display: flex; flex-direction: column; gap: 12px; }
+.seg-control { display: flex; background: var(--surface); border-radius: 999px; padding: 4px; gap: 4px; }
+.seg-control button { flex: 1; background: transparent; color: var(--text-dim); border: 0; padding: 10px; border-radius: 999px; min-height: var(--tap); }
+.seg-control button.active { background: var(--surface-2); color: var(--text); }
+.hist-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.hist-row { width: 100%; display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 0; padding: 14px 16px; border-radius: 10px; text-align: left; color: var(--text); min-height: var(--tap); }
+.hist-meta { color: var(--text-dim); font-size: 14px; }
+.empty { color: var(--text-dim); padding: 16px 0; }
+.workout-detail, .exercise-history { display: flex; flex-direction: column; gap: 12px; }
+.set-summary { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; color: var(--text); }
