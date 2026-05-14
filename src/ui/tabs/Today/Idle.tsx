@@ -15,7 +15,9 @@ export default function Idle({ state }: { state: State }) {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["today-state"] }),
   })
 
-  const heading = state.isDeload
+  const heading = state.deloadElapsed
+    ? "Cycle complete — start fresh"
+    : state.isDeload
     ? `Deload week — ${DAY_LABEL[state.nextDay]}`
     : `${DAY_LABEL[state.nextDay]} · Week ${state.week} of ${state.weekLength}`
 

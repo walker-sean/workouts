@@ -9,13 +9,11 @@ const DAY_LABEL: Record<WorkoutDay, string> = {
 
 export default function FirstRun() {
   const qc = useQueryClient()
-  const [units, setUnits] = useState<"lb" | "kg">("lb")
   const [day, setDay] = useState<WorkoutDay>("UpperA")
 
   const finish = useMutation({
     mutationFn: async () => {
       await db.settings.update("singleton", {
-        units,
         rotationPointer: WORKOUT_ROTATION.indexOf(day),
         firstRunDone: true,
       })
@@ -26,18 +24,7 @@ export default function FirstRun() {
   return (
     <div className="first-run">
       <h1>Welcome</h1>
-      <p className="first-run-meta">Two quick questions, then you're set.</p>
-
-      <fieldset className="fr-group">
-        <legend>Weight units</legend>
-        <div className="fr-choices">
-          {(["lb", "kg"] as const).map(u => (
-            <button key={u} className={`fr-choice ${units === u ? "active" : ""}`} onClick={() => setUnits(u)}>
-              {u}
-            </button>
-          ))}
-        </div>
-      </fieldset>
+      <p className="first-run-meta">One quick question, then you're set.</p>
 
       <fieldset className="fr-group">
         <legend>Starting workout</legend>

@@ -84,7 +84,7 @@ export default function ExerciseCard({ workoutId, plannedExerciseId, exercise }:
         />
       )}
       <div className="target-line">
-        <strong>{plan.repRange[0]}–{plan.repRange[1]} reps @ {plan.rir} RIR{deload ? " · DELOAD" : ""}</strong>
+        <strong>{plan.repRange[0]}–{plan.repRange[1]} reps @ {deload ? deloadRir(plan.rir) : plan.rir} RIR{deload ? " · DELOAD" : ""}</strong>
         <span className="target-history">last: {lastSummary}</span>
       </div>
       <div className="sets">

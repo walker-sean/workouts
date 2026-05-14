@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getSettings } from "../../../data/queries"
 import { db } from "../../../data/db"
@@ -5,8 +6,11 @@ import { db } from "../../../data/db"
 export default function SettingsPanel() {
   const qc = useQueryClient()
   const q = useQuery({ queryKey: ["settings"], queryFn: getSettings })
-  const setUnits = useMutation({
-    mutationFn: (units: "lb" | "kg") => db.settings.update("singleton", { units }),
+
+  const [newItem, setNewItem] = useState("")
+
+  const updateMobility = useMutation({
+    mutationFn: (items: string[]) => db.settings.update("singleton", { warmupMobilityItems: items }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["settings"] }),
   })
 
@@ -22,7 +26,9 @@ export default function SettingsPanel() {
     const a = document.createElement("a")
     a.href = url
     a.download = `workouts-export-${new Date().toISOString().slice(0, 10)}.json`
+    document.body.appendChild(a)
     a.click()
+    document.body.removeChild(a)
     URL.revokeObjectURL(url)
   }
 
@@ -35,17 +41,54 @@ export default function SettingsPanel() {
 
   if (!q.data) return null
 
+  const mobilityItems = q.data.warmupMobilityItems
+
+  const removeItem = (index: number) => {
+    const updated = mobilityItems.filter((_, i) => i !== index)
+    updateMobility.mutate(updated)
+  }
+
+  const addItem = () => {
+    const trimmed = newItem.trim()
+    if (!trimmed) return
+    updateMobility.mutate([...mobilityItems, trimmed])
+    setNewItem("")
+  }
+
   return (
     <section className="card">
       <div className="card-header"><span>Settings</span></div>
       <div className="card-body settings-body">
-        <label className="settings-row">
-          <span>Units</span>
-          <select value={q.data.units} onChange={e => setUnits.mutate(e.target.value as "lb" | "kg")}>
-            <option value="lb">lb</option>
-            <option value="kg">kg</option>
-          </select>
-        </label>
+        <section className="settings-section">
+          <h3 className="settings-section-title">Warmup mobility</h3>
+          <ul className="mobility-list">
+            {mobilityItems.map((item, i) => (
+              <li key={i} className="mobility-item">
+                <span>{item}</span>
+                <button
+                  className="link-btn mobility-remove"
+                  onClick={() => removeItem(i)}
+                  aria-label={`Remove ${item}`}
+                >
+                  ×
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="mobility-add-row">
+            <input
+              className="mobility-input"
+              type="text"
+              placeholder="New item…"
+              value={newItem}
+              onChange={e => setNewItem(e.target.value)}
+              onKeyDown={e => { if (e.key === "Enter") addItem() }}
+            />
+            <button className="secondary-btn" onClick={addItem} disabled={!newItem.trim()}>
+              Add
+            </button>
+          </div>
+        </section>
         <button className="secondary-btn" onClick={exportData}>Export data (JSON)</button>
         <button className="secondary-btn danger" onClick={resetAll}>Reset all data</button>
       </div>

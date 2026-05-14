@@ -7,7 +7,14 @@ export default function RestTimer() {
 
   useEffect(() => {
     if (endsAt == null) return
-    const id = setInterval(() => setNow(Date.now()), 250)
+    const id = setInterval(() => {
+      const ts = Date.now()
+      setNow(ts)
+      if (ts >= endsAt) {
+        clearInterval(id)
+        restTimer.skip()
+      }
+    }, 250)
     return () => clearInterval(id)
   }, [endsAt])
 

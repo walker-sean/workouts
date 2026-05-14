@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { roundToIncrement, lbToKg, kgToLb } from "./units"
+import { roundToIncrement } from "./units"
 
 describe("roundToIncrement", () => {
   it("rounds 127.5 to nearest 2.5 -> 127.5", () => {
@@ -16,14 +16,5 @@ describe("roundToIncrement", () => {
   })
   it("rounds 7.5 to nearest 5 -> 10", () => {
     expect(roundToIncrement(7.5, 5)).toBe(10)
-  })
-})
-
-describe("lb/kg conversion", () => {
-  it("lbToKg(220) ~= 99.79", () => {
-    expect(lbToKg(220)).toBeCloseTo(99.79, 1)
-  })
-  it("kgToLb(100) ~= 220.46", () => {
-    expect(kgToLb(100)).toBeCloseTo(220.46, 1)
   })
 })
