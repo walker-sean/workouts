@@ -41,7 +41,8 @@ export default function WarmupCard({ workout, onDone }: { workout: LoggedWorkout
   const { working, ramps, mobility, exerciseName } = ctx.data
   const toggle = (key: string) => {
     const next = new Set(checked)
-    next.has(key) ? next.delete(key) : next.add(key)
+    if (next.has(key)) next.delete(key)
+    else next.add(key)
     setChecked(next)
   }
 
