@@ -175,3 +175,9 @@ input { font: inherit; }
   padding: 14px; border-radius: 10px; font-size: 16px; min-height: var(--tap);
 }
 .fr-choice.active { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+
+.detail-field { display: flex; flex-direction: column; gap: 6px; }
+.detail-textarea { background: var(--surface-2); border: 1px solid var(--surface-2); border-radius: 8px; color: var(--text); padding: 10px 12px; font-size: 15px; resize: vertical; font: inherit; }
+.detail-input { background: var(--surface-2); border: 1px solid var(--surface-2); border-radius: 8px; color: var(--text); padding: 10px 12px; font-size: 15px; width: 100%; }
+.detail-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.plan-exercise-btn { width: 100%; display: flex; justify-content: space-between; align-items: center; background: transparent; border: 0; color: var(--text); text-align: left; padding: 6px 0; min-height: var(--tap); cursor: pointer; }
