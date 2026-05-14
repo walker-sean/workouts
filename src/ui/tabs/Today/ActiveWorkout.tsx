@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { db, LoggedWorkout } from "../../../data/db"
 import { finishWorkout, discardWorkout } from "../../../data/mutations"
+import ExerciseCard from "./ExerciseCard"
 
 const DAY_LABEL: Record<string, string> = {
   UpperA: "Upper A", LowerA: "Lower A", UpperB: "Upper B", LowerB: "Lower B",
@@ -53,7 +54,9 @@ export default function ActiveWorkout({ workout }: { workout: LoggedWorkout }) {
             <span className="card-meta">{ex.sets.length > 0 ? `${ex.sets.length} sets` : "—"}</span>
           </button>
           {expanded === ex.plannedExerciseId && (
-            <div className="card-body">Exercise card body (next task)</div>
+            <div className="card-body">
+              <ExerciseCard workoutId={w.id} plannedExerciseId={ex.plannedExerciseId} exercise={ex} />
+            </div>
           )}
         </section>
       ))}
