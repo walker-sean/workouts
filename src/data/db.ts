@@ -30,6 +30,7 @@ export type Settings = {
   defaultRestCompound: number
   defaultRestIsolation: number
   rotationPointer: number         // 0..3 index into WORKOUT_ROTATION
+  firstRunDone: boolean
 }
 
 class WorkoutsDB extends Dexie {
@@ -78,6 +79,7 @@ export async function seedIfEmpty(): Promise<void> {
       defaultRestCompound: 150,
       defaultRestIsolation: 75,
       rotationPointer: 0,
+      firstRunDone: false,
     })
   })
 }
