@@ -1,6 +1,7 @@
+import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { LoggedExercise } from "../../../data/db"
-import { logSet } from "../../../data/mutations"
+import { logSet, swapExercise } from "../../../data/mutations"
 import { lastSessionForExercise, getActiveMesocycle, historyForExercise } from "../../../data/queries"
 import { suggestNext, countStall } from "../../../domain/progression"
 import { SEEDED_PLAN } from "../../../domain/plan"
@@ -14,6 +15,7 @@ export default function ExerciseCard({ workoutId, plannedExerciseId, exercise }:
   exercise: LoggedExercise
 }) {
   const qc = useQueryClient()
+  const [swapOpen, setSwapOpen] = useState(false)
   const plan = SEEDED_PLAN.find(p => p.id === plannedExerciseId)
     ?? SEEDED_PLAN.find(p => p.id === exercise.swappedFromId)
 
@@ -66,6 +68,21 @@ export default function ExerciseCard({ workoutId, plannedExerciseId, exercise }:
           Stalled {stallCount} sessions — consider a swap or extra set.
         </div>
       )}
+      <div className="ex-toolbar">
+        <button className="link-btn" onClick={() => setSwapOpen(true)}>Swap</button>
+      </div>
+      {swapOpen && (
+        <SwapSheet
+          currentPlannedExerciseId={plannedExerciseId}
+          category={plan.category}
+          onClose={() => setSwapOpen(false)}
+          onSwap={async (target) => {
+            await swapExercise(workoutId, plannedExerciseId, { newPlannedExerciseId: target.id, newName: target.name })
+            setSwapOpen(false)
+            qc.invalidateQueries({ queryKey: ["workout", workoutId] })
+          }}
+        />
+      )}
       <div className="target-line">
         <strong>{plan.repRange[0]}–{plan.repRange[1]} reps @ {plan.rir} RIR{deload ? " · DELOAD" : ""}</strong>
         <span className="target-history">last: {lastSummary}</span>
@@ -80,6 +97,40 @@ export default function ExerciseCard({ workoutId, plannedExerciseId, exercise }:
             onLog={s => log.mutate(s)}
           />
         ))}
+      </div>
+    </div>
+  )
+}
+
+function SwapSheet({
+  currentPlannedExerciseId,
+  category,
+  onClose,
+  onSwap,
+}: {
+  currentPlannedExerciseId: string
+  category: string
+  onClose: () => void
+  onSwap: (target: { id: string; name: string }) => void
+}) {
+  const candidates = SEEDED_PLAN
+    .filter(p => p.category === category && p.id !== currentPlannedExerciseId)
+  return (
+    <div className="sheet" role="dialog">
+      <div className="sheet-card">
+        <h3>Swap to</h3>
+        <ul className="hist-list">
+          {candidates.length === 0 && <li className="empty">No swap options in category "{category}".</li>}
+          {candidates.map(c => (
+            <li key={c.id}>
+              <button className="hist-row" onClick={() => onSwap({ id: c.id, name: c.name })}>
+                <strong>{c.name}</strong>
+                <span className="hist-meta">{c.repRange[0]}–{c.repRange[1]} reps</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+        <button className="secondary-btn" onClick={onClose}>Cancel</button>
       </div>
     </div>
   )

@@ -149,3 +149,8 @@ input { font: inherit; }
 .banner-warn { background: rgba(217, 102, 102, 0.15); color: var(--danger); }
 .working-weight { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-dim); }
 .working-weight input { width: 80px; background: var(--surface); border: 1px solid var(--surface-2); border-radius: 8px; color: var(--text); padding: 8px; font-size: 16px; text-align: center; }
+
+.ex-toolbar { display: flex; justify-content: flex-end; margin-bottom: 6px; }
+.sheet { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: flex-end; z-index: 100; }
+.sheet-card { width: 100%; max-height: 80vh; overflow-y: auto; background: var(--surface); border-radius: 16px 16px 0 0; padding: 20px; display: flex; flex-direction: column; gap: 12px; padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+.sheet-card h3 { margin: 0; font-size: 18px; }
