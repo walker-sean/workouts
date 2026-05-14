@@ -147,6 +147,7 @@ input { font: inherit; }
 
 .banner { padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; font-size: 14px; }
 .banner-warn { background: rgba(217, 102, 102, 0.15); color: var(--danger); }
+.banner-info { background: rgba(95, 184, 120, 0.15); color: var(--accent); }
 .working-weight { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-dim); }
 .working-weight input { width: 80px; background: var(--surface); border: 1px solid var(--surface-2); border-radius: 8px; color: var(--text); padding: 8px; font-size: 16px; text-align: center; }
 

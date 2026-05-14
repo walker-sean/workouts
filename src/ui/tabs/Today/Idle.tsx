@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { startWorkout } from "../../../data/mutations"
+import { completeMesocycleAndStartNew, startWorkout } from "../../../data/mutations"
 import type { useTodayState } from "./useTodayState"
 
 type State = NonNullable<ReturnType<typeof useTodayState>["data"]>
@@ -21,6 +21,9 @@ export default function Idle({ state }: { state: State }) {
 
   return (
     <div className="idle">
+      {state.deloadElapsed && (
+        <DeloadCompletePrompt />
+      )}
       <h1 className="idle-heading">{heading}</h1>
       <button className="primary-btn" onClick={() => start.mutate()} disabled={start.isPending}>
         {start.isPending ? "Starting…" : "Start workout"}
@@ -41,6 +44,20 @@ export default function Idle({ state }: { state: State }) {
           </ul>
         </section>
       )}
+    </div>
+  )
+}
+
+function DeloadCompletePrompt() {
+  const qc = useQueryClient()
+  const newMeso = useMutation({
+    mutationFn: completeMesocycleAndStartNew,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["today-state"] }),
+  })
+  return (
+    <div className="banner banner-info">
+      Deload complete — start new mesocycle?{" "}
+      <button className="link-btn" onClick={() => newMeso.mutate()}>Yes</button>
     </div>
   )
 }
