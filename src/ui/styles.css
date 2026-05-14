@@ -90,6 +90,15 @@ input { font: inherit; }
   padding: 0 12px; font-weight: 600; min-height: var(--tap);
 }
 
+.rest-timer {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--accent-dim); color: var(--accent);
+  display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+  border-radius: 999px; margin-bottom: 8px;
+}
+.rt-time { font-variant-numeric: tabular-nums; font-weight: 600; font-size: 18px; flex: 1; }
+.rt-btn { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 6px 10px; border-radius: 999px; min-height: 36px; font-size: 13px; }
+
 .warmup { display: flex; flex-direction: column; gap: 12px; }
 .warmup-section { font-size: 13px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin: 8px 0 4px; font-weight: 600; }
 .warmup-list, .ramp-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }

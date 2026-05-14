@@ -4,6 +4,7 @@ import { db, LoggedWorkout } from "../../../data/db"
 import { finishWorkout, discardWorkout } from "../../../data/mutations"
 import ExerciseCard from "./ExerciseCard"
 import WarmupCard from "./WarmupCard"
+import RestTimer from "./RestTimer"
 
 const DAY_LABEL: Record<string, string> = {
   UpperA: "Upper A", LowerA: "Lower A", UpperB: "Upper B", LowerB: "Lower B",
@@ -36,6 +37,7 @@ export default function ActiveWorkout({ workout }: { workout: LoggedWorkout }) {
 
   return (
     <div className="active-workout">
+      <RestTimer />
       <header className="aw-header">
         <h1>{DAY_LABEL[w.day]} {w.isDeload && <span className="deload-tag">deload</span>}</h1>
         <button className="link-btn" onClick={() => discard.mutate()}>Discard</button>

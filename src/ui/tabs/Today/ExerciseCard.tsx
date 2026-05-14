@@ -7,6 +7,7 @@ import { SEEDED_PLAN } from "../../../domain/plan"
 import { prescribedSetCount, isDeloadWeek, deloadWeight, deloadRir } from "../../../domain/mesocycle"
 import { getActiveMesocycle } from "../../../data/queries"
 import SetRow, { SetDraft } from "./SetRow"
+import { restTimer } from "./restTimerStore"
 
 export default function ExerciseCard({ workoutId, plannedExerciseId, exercise }: {
   workoutId: string
@@ -44,6 +45,7 @@ export default function ExerciseCard({ workoutId, plannedExerciseId, exercise }:
     mutationFn: (s: SetDraft) => logSet(workoutId, plannedExerciseId, s),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["workout", workoutId] })
+      restTimer.start(plan.restSeconds)
     },
   })
 
