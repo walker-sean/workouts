@@ -124,3 +124,23 @@ input { font: inherit; }
 .empty { color: var(--text-dim); padding: 16px 0; }
 .workout-detail, .exercise-history { display: flex; flex-direction: column; gap: 12px; }
 .set-summary { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; color: var(--text); }
+
+.plan-tab { display: flex; flex-direction: column; gap: 12px; }
+.meso-status { margin: 0 0 12px; font-weight: 500; }
+.meso-actions { display: flex; flex-direction: column; gap: 8px; }
+.secondary-btn {
+  background: var(--surface-2); color: var(--text); border: 0; padding: 12px;
+  border-radius: 8px; min-height: var(--tap); font-weight: 500;
+}
+.secondary-btn:disabled { opacity: 0.4; }
+.secondary-btn.danger { color: var(--danger); }
+
+.plan-list { display: flex; flex-direction: column; gap: 8px; }
+.plan-day { background: var(--surface); border-radius: 10px; padding: 12px 16px; }
+.plan-day summary { cursor: pointer; display: flex; justify-content: space-between; align-items: center; min-height: var(--tap); }
+.plan-exercises { list-style: none; padding: 8px 0 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.plan-exercises li { display: flex; justify-content: space-between; padding: 6px 0; }
+
+.settings-body { display: flex; flex-direction: column; gap: 12px; }
+.settings-row { display: flex; justify-content: space-between; align-items: center; min-height: var(--tap); }
+.settings-row select { background: var(--surface); color: var(--text); border: 1px solid var(--surface-2); border-radius: 8px; padding: 8px 12px; font-size: 16px; }
