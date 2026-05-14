@@ -107,3 +107,9 @@ input { font: inherit; }
 .ramp-row { display: flex; justify-content: space-between; padding: 8px 0; }
 .ramp-pct { color: var(--text-dim); font-size: 13px; }
 .ramp-set { font-size: 16px; font-weight: 500; }
+
+.summary { display: flex; flex-direction: column; gap: 16px; padding-top: 24px; }
+.summary h1 { font-size: 28px; margin: 0; }
+.summary-meta { color: var(--text-dim); margin: 0; }
+.summary-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.summary-list li { background: var(--surface); padding: 12px; border-radius: 10px; }

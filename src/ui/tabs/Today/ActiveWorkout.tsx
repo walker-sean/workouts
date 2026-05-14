@@ -10,7 +10,7 @@ const DAY_LABEL: Record<string, string> = {
   UpperA: "Upper A", LowerA: "Lower A", UpperB: "Upper B", LowerB: "Lower B",
 }
 
-export default function ActiveWorkout({ workout }: { workout: LoggedWorkout }) {
+export default function ActiveWorkout({ workout, onFinish }: { workout: LoggedWorkout; onFinish: (w: LoggedWorkout) => void }) {
   const qc = useQueryClient()
   // expandedKey: "warmup" or an exercise.plannedExerciseId
   const [expanded, setExpanded] = useState<string>("warmup")
@@ -23,10 +23,14 @@ export default function ActiveWorkout({ workout }: { workout: LoggedWorkout }) {
   const w = live.data!
 
   const finish = useMutation({
-    mutationFn: () => finishWorkout(w.id),
-    onSuccess: () => {
+    mutationFn: async () => {
+      await finishWorkout(w.id)
+      return await db.loggedWorkouts.get(w.id)
+    },
+    onSuccess: async (finishedWorkout) => {
       qc.invalidateQueries({ queryKey: ["today-state"] })
       qc.invalidateQueries({ queryKey: ["workout", w.id] })
+      if (finishedWorkout) onFinish(finishedWorkout)
     },
   })
 

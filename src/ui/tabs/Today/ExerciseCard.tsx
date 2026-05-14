@@ -45,7 +45,7 @@ export default function ExerciseCard({ workoutId, plannedExerciseId, exercise }:
     mutationFn: (s: SetDraft) => logSet(workoutId, plannedExerciseId, s),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["workout", workoutId] })
-      restTimer.start(plan.restSeconds)
+      if (plan) restTimer.start(plan.restSeconds)
     },
   })
 
