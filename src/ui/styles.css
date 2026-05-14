@@ -36,3 +36,16 @@ body { overscroll-behavior: contain; }
 
 button { font: inherit; color: inherit; cursor: pointer; }
 input { font: inherit; }
+
+.idle { display: flex; flex-direction: column; gap: 24px; }
+.idle-heading { font-size: 24px; margin: 8px 0; font-weight: 600; }
+.primary-btn {
+  width: 100%; padding: 18px; background: var(--accent); color: #0a1a10;
+  border: 0; border-radius: 12px; font-size: 18px; font-weight: 600;
+  min-height: var(--tap);
+}
+.primary-btn:disabled { opacity: 0.6; }
+.section-title { font-size: 13px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px; }
+.recent-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.recent-item { background: var(--surface); padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
+.recent-meta { color: var(--text-dim); font-size: 14px; }
